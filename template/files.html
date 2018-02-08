@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Files</title>
+</head>
+
+<body>
+    <b>Directory: </b><span id="root"></span>
+    <br>
+    <b>Files: </b><span>{{.Root.SizeString}}</span>
+    <table>
+        <thead>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Date</th>
+        </thead>
+        <tbody>
+            <tr>
+                <td colspan="4"><a href="javascript:go('..')">../</a></td>
+            </tr>
+            {{range .Items}}
+            <tr>
+                <td><a href="javascript:go('{{.Name}}')">{{.Name}}</a></td>
+                <td>{{.SizeString}}</td>
+                <td>{{.Date}}</td>
+            </tr>
+            {{else}}
+            <tr>
+                <td colspan="4">Empty directory</td>
+            </tr>
+            {{end}}
+        </tbody>
+    </table>
+</body>
+<script>
+    var search = window.location.search;
+    if (search == "") {
+        search = "?path=";
+    }
+    if (!search.endsWith("/")) {
+        search += "/";
+    }
+    var s = search.split("?path=");
+    document.getElementById("root").innerHTML = s[1];
+
+    function go(item) {
+        var search = window.location.search;
+        if (search == "") {
+            search = "?path=";
+        }
+        if (!search.endsWith("/")) {
+            search += "/";
+        }
+        if (item != "..") {
+            window.location.href = window.location.pathname + search + item;
+        } else {
+            var ret = search.split("/");
+            var search = "";
+            for (var i = 0; i < ret.length - 2; i++) {
+                search += ret[i] + "/";
+            }
+            window.location.href = window.location.pathname + search;
+        }
+    }
+</script>
+
+</html>
