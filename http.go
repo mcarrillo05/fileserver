@@ -30,7 +30,7 @@ func (f fileServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	items := getItems(searchPath, f.countFiles)
+	items := GetItems(searchPath, f.countFiles)
 	if len(items) > 0 {
 		if items[0].Type == fileType {
 			http.ServeFile(w, req, searchPath)

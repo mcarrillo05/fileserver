@@ -32,7 +32,8 @@ type Item struct {
 	Type       typeFile `json:"type"`
 }
 
-func getItems(root string, countFiles bool) (items []Item) {
+//GetItems returns all files and directories, if countFiles is true, process will count all files of each directory at first level.
+func GetItems(root string, countFiles bool) (items []Item) {
 	filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -47,6 +48,9 @@ func getItems(root string, countFiles bool) (items []Item) {
 			i.Date = info.ModTime().Format("2006-01-02 03:04PM")
 		} else {
 			i.Name += "/"
+			if countFiles {
+				i.countFiles(filepath.Join(root, i.Name))
+			}
 		}
 		items = append(items, i)
 		if info.IsDir() && path != root {
@@ -54,17 +58,9 @@ func getItems(root string, countFiles bool) (items []Item) {
 		}
 		return nil
 	})
-	for i := range items {
-		if i == 0 {
-			if items[i].Type == dirType {
-				items[i].Size = int64(len(items) - 1)
-				items[i].SizeString = strconv.FormatInt(items[0].Size, 10)
-			}
-		} else {
-			if countFiles {
-				items[i].countFiles(filepath.Join(root, items[i].Name))
-			}
-		}
+	if len(items) > 0 && items[0].Type == dirType {
+		items[0].Size = int64(len(items) - 1)
+		items[0].SizeString = strconv.FormatInt(items[0].Size, 10)
 	}
 	return items
 }
