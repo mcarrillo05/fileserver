@@ -28,7 +28,7 @@ type itemsResponse struct {
 
 //Item is a file or directory.
 type Item struct {
-	ID         string   `json:"ID,omitempty"`
+	ID         string   `json:"id,omitempty"`
 	Name       string   `json:"name"`
 	Size       int64    `json:"size"`
 	SizeString string   `json:"size_string"`
