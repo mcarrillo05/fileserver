@@ -32,7 +32,7 @@ func (f fileServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	}
 	items := GetItems(searchPath, f.countFiles)
 	if len(items) > 0 {
-		if items[0].Type == fileType {
+		if items[0].Type == FileType {
 			http.ServeFile(w, req, searchPath)
 		} else {
 			if f.template != nil {

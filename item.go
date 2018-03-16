@@ -7,11 +7,14 @@ import (
 	"strconv"
 )
 
-type typeFile int
+//TypeItem defines if item is directory or file.
+type TypeItem int
 
 const (
-	dirType typeFile = iota
-	fileType
+	//DirType is a directory.
+	DirType TypeItem = iota
+	//FileType is a file.
+	FileType
 )
 
 var (
@@ -25,11 +28,12 @@ type itemsResponse struct {
 
 //Item is a file or directory.
 type Item struct {
+	ID         string   `json:"ID,omitempty"`
 	Name       string   `json:"name"`
 	Size       int64    `json:"size"`
 	SizeString string   `json:"size_string"`
 	Date       string   `json:"date"`
-	Type       typeFile `json:"type"`
+	Type       TypeItem `json:"type"`
 }
 
 //GetItems returns all files and directories, if countFiles is true, process will count all files of each directory at first level.
@@ -42,7 +46,7 @@ func GetItems(root string, countFiles bool) (items []Item) {
 			Name: info.Name(),
 		}
 		if !info.IsDir() {
-			i.Type = fileType
+			i.Type = FileType
 			i.Size = info.Size()
 			i.SizeString = formatSize(info.Size())
 			i.Date = info.ModTime().Format("2006-01-02 03:04PM")
@@ -58,7 +62,7 @@ func GetItems(root string, countFiles bool) (items []Item) {
 		}
 		return nil
 	})
-	if len(items) > 0 && items[0].Type == dirType {
+	if len(items) > 0 && items[0].Type == DirType {
 		items[0].Size = int64(len(items) - 1)
 		items[0].SizeString = strconv.FormatInt(items[0].Size, 10)
 	}
@@ -66,7 +70,7 @@ func GetItems(root string, countFiles bool) (items []Item) {
 }
 
 func (i *Item) countFiles(root string) {
-	if i.Type == fileType {
+	if i.Type == FileType {
 		return
 	}
 	i.Size = 0
