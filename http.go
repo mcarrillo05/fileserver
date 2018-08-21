@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"net/http"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -33,6 +34,7 @@ func (f fileServer) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	items := GetItems(searchPath, f.countFiles)
 	if len(items) > 0 {
 		if items[0].Type == FileType {
+			w.Header().Add("Content-Disposition", "attachment;filename="+filepath.Base(searchPath))
 			http.ServeFile(w, req, searchPath)
 		} else {
 			if f.template != nil {
